@@ -1,18 +1,20 @@
 #!/bin/bash
 function update {
-        now=$(date +%a+%F+%T)
-        echo "I am starting :: Phase 1 looking for updates" | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
-        sudo apt-get update -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
-        echo "Possible Upgrades :: Phase 2" | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
-        sudo apt-get upgrade -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
-        sudo apt-get dist-upgrade -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
-        echo "Removing Useless Content :: Phase 3" | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
-        sudo apt-get autoremove -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
-    sudo apt-get autoclean -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
-        exit
+	now=$(date +%a+%F+%T)
+	echo "Please Specify Your Directory "
+    read dir
+    echo "I am starting :: Phase 1 looking for updates" | tee -a $dir/$now.log
+	sudo apt-get update -y | tee -a $dir/$now.log
+	echo "Possible Upgrades :: Phase 2" | tee -a $dir/$now.log
+	sudo apt-get upgrade -y | tee -a $dir/$now.log
+	sudo apt-get dist-upgrade -y | tee -a $dir/$now.log
+	echo "Removing Useless Content :: Phase 3" | tee -a $dir/$now.log
+	sudo apt-get autoremove -y | tee -a $dir/$now.log
+    sudo apt-get autoclean -y | tee -a $dir/$now.log
+	exit
 }
 function wait {
-        while true; do
+	while true; do
         update 
         sleep 5s
     done
