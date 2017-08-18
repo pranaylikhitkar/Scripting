@@ -1,20 +1,20 @@
 #!/bin/bash
 function update {
-	echo "I am starting :: Phase 1 looking for updates"
-	sudo apt-get update -y
-	echo "Possible Upgrades :: Phase 2"
-	sudo apt-get upgrade -y
-	sudo apt-get dist-upgrade -y
-	echo "Removing Useless Content :: Phase 3"
-	sudo apt-get autoremove 
-	sudo apt-get autoclean
-	exit
+        now=$(date +%a+%F+%T)
+        echo "I am starting :: Phase 1 looking for updates" | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
+        sudo apt-get update -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
+        echo "Possible Upgrades :: Phase 2" | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
+        sudo apt-get upgrade -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
+        sudo apt-get dist-upgrade -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
+        echo "Removing Useless Content :: Phase 3" | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
+        sudo apt-get autoremove -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
+    sudo apt-get autoclean -y | tee -a /home/alpha/Personal/BlackPhantom/Logs/nupdate/$now.log
+        exit
 }
 function wait {
-	while true; do
+        while true; do
         update 
         sleep 5s
     done
 }
 wait
-
