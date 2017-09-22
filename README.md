@@ -10,3 +10,5 @@ Nupdate is a small updating script that works flawlessly with your Ubuntu Distri
 # Strong Java
 A unique script to make strong unique Passwords, so you don't ever forget your passwords again.
 
+#Router.py
+This script does nothing fancy but saves a lot of time. When everyday you have to do the same routine. This script surely comes in handy.
