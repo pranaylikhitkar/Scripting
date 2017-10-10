@@ -12,3 +12,8 @@ A unique script to make strong unique Passwords, so you don't ever forget your p
 
 # Router2.py
 This script does nothing fancy but saves a lot of time. When everyday you have to do the same routine. This script surely comes in handy.
+
+# vpnbook.py
+
+This script surely comes in handy to bypass firewall. Get password from vpnbook.com. Pass your passwd and VPNBook Password. 
+for Ex. python vpnbook.py <password> <vpn-password>.
