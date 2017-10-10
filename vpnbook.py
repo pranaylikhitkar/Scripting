@@ -58,6 +58,7 @@ def openvpn():
 def process_end():
     """When the program ends / terminates it makes sure that it kills the openvpn"""
     os.system('rm /home/$USER/VPN*')
+    os.system('rm /home/$USER/vpnbook*')
     p = subprocess.Popen(['ps', '-A'], stdout=subprocess.PIPE)
     out, err = p.communicate()
     for line in out.splitlines():
