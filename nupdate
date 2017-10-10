@@ -16,7 +16,7 @@ function update {
 function wait {
 	while true; do
         update 
-        sleep 5s
+        sleep 43200s
     done
 }
 wait
