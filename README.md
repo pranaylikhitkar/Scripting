@@ -16,5 +16,5 @@ This script does nothing fancy but saves a lot of time. When everyday you have t
 # vpnbook.py
 
 This script surely comes in handy to bypass firewall. Get password from vpnbook.com. Pass your passwd and VPNBook Password. 
-for Ex. python vpnbook.py password vpn-password
+for Ex. python vpnbook.py password vpn-password.
 This needs tools like network-manager network-manager-openvpn network-manager-gnome network-manager-openvpn-gnome
