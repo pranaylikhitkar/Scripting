@@ -31,6 +31,7 @@ PASS = sys.argv[1]
 
 """Functions"""
 def connection():
+    """Check the Status Of Internet Connection."""
     if httpResponse.code == 200:
         print "Connection Result : Passed."
     else:
@@ -38,13 +39,14 @@ def connection():
     getconfig()
 
 def getconfig():
+    """Fetch all the configuration files from openvpn"""
     os.system("mkdir /home/$USER/openvpn")
     os.system("wget https://www.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-US1.zip -P /home/$USER/openvpn")
     os.system("unzip /home/$USER/openvpn/VPNBook.com-OpenVPN-US1.zip -d /home/$USER/openvpn")
     getpass()
 
 def getpass():
-    """Getting OpenVPN Certificates from the URL."""
+    """Fetch the Password from vpnbook.com"""
     pop = soup.find(text="Password: ")
     pop1 = str(pop.next).replace("<strong>","").replace("</strong>","")
     print pop1
@@ -70,6 +72,7 @@ def openvpn(passwd):
     fallback()
 
 def fallback():
+    """Steps when the connection crashes or the user chooses to exit the script"""
     os.system("rm -rvf /home/$USER/openvpn")
     p = subprocess.Popen(['ps','-A'], stdout=subprocess.PIPE)
     out,err = p.communicate()
