@@ -1,72 +1,86 @@
 """
 created_by = pranaylikhitkar
 created_on = 1st October 2017
+script_url = https://www.github.com/pranaylikhitkar/Scripting/blob/master/vpnbook.py
 VPN Script-OpenVPN script for vpnbook.com
-NOTE: This script is designed for Linux based system.
-Before using this script make sure you have installed the following packets
+NOTE: This script is designed for Debian/Ubuntu Systems.
+Before using this script make sure you have installed the following packages.
 1. network-manager 
 2. network-manager-gnome
 3. network-manager-openvpn
 4. network-manager-openvpn-gnome 
 """
 
+from bs4 import BeautifulSoup
 import urllib
+import pexpect
 import subprocess
 import signal
 import os
 import time
 import sys
 import pexpect
+import atexit
 
-""" Constants"""
+"""Constants"""
+URL = "https://vpnbook.com/freevpn" #URL.
+httpResponse = urllib.urlopen(URL) # HTTPResponse Code
+soup = BeautifulSoup(httpResponse,"lxml")
+username = "vpnbook"
+PASS = sys.argv[1]
 
-URL = "https://vpnbook.com/freevpn"
-httpResponse = urllib.urlopen(URL)
-
-#Function connection looks for response.
-U_PASS = sys.argv[1] #Password for your username.
-VPN_PASS = sys.argv[2] #Password for vpnbook.
+"""Functions"""
 def connection():
-    """Getting HTTP response to see for Internet Connection or Website availability"""
     if httpResponse.code == 200:
-        print "Connection Test : PASSED."
-        get_config()
+        print "Connection Result : Passed."
     else:
-        print "Status Code : " % (httpResponse.code)
-def get_config():
-    """Getting OpenVPN certificates from https://www.vpnbook.com"""
-    os.system("wget https://www.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-US1.zip -P /home/slyrobot/Downloads")
-    os.system("unzip /home/slyrobot/Downloads/VPNBook.com-OpenVPN-US1.zip -d Downloads")
-    openvpn() #Call function openvpn()
-def openvpn():
-    """OpenVPN Sesssion begins"""
-    session = pexpect.spawn('sudo openvpn --config /home/slyrobot/Downloads/vpnbook-us1-tcp80.ovpn')
+        print "Error Code : " + str(httpResponse.code + ". Please check internet connection.")
+    getconfig()
+
+def getconfig():
+    os.system("mkdir /home/$USER/openvpn")
+    os.system("wget https://www.vpnbook.com/free-openvpn-account/VPNBook.com-OpenVPN-US1.zip -P /home/$USER/openvpn")
+    os.system("unzip /home/$USER/openvpn/VPNBook.com-OpenVPN-US1.zip -d /home/$USER/openvpn")
+    getpass()
+
+def getpass():
+    """Getting OpenVPN Certificates from the URL."""
+    pop = soup.find(text="Password: ")
+    pop1 = str(pop.next).replace("<strong>","").replace("</strong>","")
+    print pop1
+    openvpn(pop1)
+
+def openvpn(passwd):
+    """OpenVPN Session Begins"""
+    session = pexpect.spawn("sudo openvpn --config /home/$USER/openvpn/vpnbook-us1-tcp80.ovpn")
     session.expect("password")
     time.sleep(2)
-    session.send(U_PASS + "\r")
-    print "OpenVPN Configuration Submitted"
+    session.send(PASS)
+    print "Password Accepted."
     time.sleep(5)
-    session.expect("Username")
-    session.send("vpnbook" + "\r")
-    time.sleep(5)
-    session.expect("Password")
-    session.send("pk7x1v3" + "\r")
-    print "VPN Log In Successful"
+    session.send(username + "\r")
+    print "Username Sent"
+    time.sleep(2)
+    session.expect("[pP]assword")
+    print "Expectation Reached"
+    session.sendline(passwd+'\r')
+    print "Password Accepted."
+    print "VPN Login Successful"
     raw_input("Press Enter To Continue : ")
-    process_end()
-    sys.exit(0)
-def process_end():
-    """When the program ends / terminates it makes sure that it kills the openvpn"""
-    os.system('rm /home/$USER/VPN*')
-    os.system('rm /home/$USER/vpnbook*')
-    p = subprocess.Popen(['ps', '-A'], stdout=subprocess.PIPE)
-    out, err = p.communicate()
+    fallback()
+
+def fallback():
+    os.system("rm -rvf /home/$USER/openvpn")
+    p = subprocess.Popen(['ps','-A'], stdout=subprocess.PIPE)
+    out,err = p.communicate()
     for line in out.splitlines():
         if 'openvpn' in line:
-            pid = int(line.split(None, 1)[0])
+            pid = int(line.split(None,1)[0])
             os.kill(pid, signal.SIGKILL)
-    os.system()
-def main():
-    connection()
-
-main()
+            if 'openvpn_cli' in line:
+                pid = int(line.split(None,1)[0])
+                os.kill(pid, signal.SIGKILL)
+            print "Process OpenVPN Killed."
+    print "Fallback procedure completed."
+atexit.register(fallback)
+connection()
